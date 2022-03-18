@@ -1,1 +1,26 @@
+version: '3'
+services:
+  database:
+    image: 'postgres:13'
+    container_name: pg
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    volumes:
+      - ./db-data/:/var/lib/postgresql/data/
+      - ./imports/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build:
+      context: .
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+      - ./app/config/.env
+    depends_on:
+      - database
 

@@ -21,8 +21,6 @@ msgstr ""
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #: movies/apps.py:8
-#, fuzzy
-#| msgid "Movie"
 msgid "movies"
 msgstr "Фильмы"
 

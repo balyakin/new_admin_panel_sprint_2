@@ -4,8 +4,8 @@ ADD app/requirements.txt /app/requirements.txt
 RUN set -ex \
     && apk add --no-cache --virtual .build-deps postgresql-dev build-base \
     && python -m venv /env \
-    && /env/bin/pip install --upgrade pip \
-    && /env/bin/pip install --no-cache-dir -r /app/requirements.txt \
+    && /env/bin/pip install --default-timeout=1000 --upgrade pip \
+    && /env/bin/pip install --default-timeout=1000 --no-cache-dir -r /app/requirements.txt \
     && runDeps="$(scanelf --needed --nobanner --recursive /env \
         | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
         | sort -u \
@@ -22,4 +22,11 @@ ENV PATH /env/bin:$PATH
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "config.wsgi:application"]
+
+COPY app/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# CMD ["python", "/app/manage.py", "migrate"]
+# CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "config.wsgi:application"]
