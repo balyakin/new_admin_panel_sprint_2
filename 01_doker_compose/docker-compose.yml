@@ -2,7 +2,6 @@ version: '3'
 services:
   database:
     image: 'postgres:13'
-    container_name: pg
     expose:
       - 5432
     ports:
@@ -24,3 +23,14 @@ services:
     depends_on:
       - database
 
+
+  nginx:
+    image: nginx:1.19.2
+    volumes:
+      - /var/www/django/static:/static
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/configs:/etc/nginx/conf.d:ro
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
