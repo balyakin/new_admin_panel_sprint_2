@@ -27,6 +27,3 @@ COPY app/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-
-# CMD ["python", "/app/manage.py", "migrate"]
-# CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "config.wsgi:application"]
