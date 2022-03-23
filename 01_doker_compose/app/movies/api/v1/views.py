@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
 
-from movies.models import Filmwork
+from movies.models import Filmwork, PersonFilmwork
 
 
 class MoviesApiMixin:
@@ -16,13 +16,16 @@ class MoviesApiMixin:
             .values().all().annotate(genres=ArrayAgg('genres__name',
                                                      distinct=True),
                                      actors=ArrayAgg('persons__full_name',
-                                                     filter=Q(personfilmwork__role__icontains='Actor'),
+                                                     filter=Q(
+                                                         personfilmwork__role__icontains=PersonFilmwork.RoleTypes.ACTOR),
                                                      distinct=True),
                                      directors=ArrayAgg('persons__full_name',
-                                                        filter=Q(personfilmwork__role__icontains='Director'),
+                                                        filter=Q(
+                                                            personfilmwork__role__icontains=PersonFilmwork.RoleTypes.DIRECTOR),
                                                         distinct=True),
                                      writers=ArrayAgg('persons__full_name',
-                                                      filter=Q(personfilmwork__role__icontains='Writer'),
+                                                      filter=Q(
+                                                          personfilmwork__role__icontains=PersonFilmwork.RoleTypes.WRITER),
                                                       distinct=True)
                                      )
 
@@ -36,7 +39,6 @@ class MoviesListApi(MoviesApiMixin, BaseListView):
     paginate_by = 50
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        print(kwargs)
         queryset = self.get_queryset()
         paginator, page, queryset, is_paginated = self.paginate_queryset(
             queryset,
@@ -63,5 +65,4 @@ class MoviesDetailApi(MoviesApiMixin, BaseDetailView):
         id = kwargs['object'].get('id')
         queryset = self.get_queryset()
         result = queryset.filter(Q(id=id))
-        print(result)
         return result.values()[0] if result else {}
