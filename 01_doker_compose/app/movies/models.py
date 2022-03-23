@@ -46,7 +46,7 @@ class Person(UUIDMixin, TimeStampedMixin):
 
 class PersonFilmwork(UUIDMixin):
     class RoleTypes(models.TextChoices):
-        DIRECTOR = 'DR', 'director'
+        DIRECTOR = 'DIR', 'director'
         WRITER = 'WR', 'writer'
         ACTOR = 'AC', 'actor'
 
